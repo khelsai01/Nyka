@@ -14,45 +14,68 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { login } from "../Redux/AuthReducer/action";
-
+// localStorage.removeItem("token")
 const Login = () => {
     const [email,setEmail]=useState("")
     const [password,setPassword]=useState("")
     const toast = useToast();
     const dispatch = useDispatch();
+    const navi = useNavigate()
+
+    const {token,isAuth} = useSelector((store=>{
+      return{
+        token:store.authReducer.token,
+        isAuth:store.authReducer.isAuth,
+
+      }
+    }))
 
     const isEmailValid = (email) => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return emailRegex.test(email);
   };
-    const handleSubmit = ()=>{
-        
-        // console.log('submit')
-        if(email && password){
-          if (!isEmailValid(email)) {
-              toast({
-                  title: "Invalid Email",
-                  description: "Please enter a valid email address.",
-                  status: "error",
-                  duration: 9000,
-                  isClosable: true,
-                  position: "top",
-              });
-              return;
-          }
-          let user={email,password}
-          dispatch(login(user)).then((res)=>{
-            console.log(res.data)
-          })
-        }
-       
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+  
+    if (email && password) {
+      if (!isEmailValid(email)) {
+        toast({
+          title: "Invalid Email",
+          description: "Please enter a valid email address.",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+          position: "top",
+        });
+        return;
+      }
+  
+      let user = { email, password };
+  
+      try {
+        // Assuming dispatch(login(user)) is an asynchronous action
+        await dispatch(login(user));
+        setEmail("");
+        setPassword("");
+      } catch (error) {
+        console.error("Login failed:", error);
+        // Handle login failure, e.g., show an error message
+      }
     }
+  };
+  console.log(isAuth)
+  
+  if (isAuth) {
+    navi("/dashboard");
+  }
+  
+   
+
   return (
     <Flex
-  
       width={"90%"}
       margin={"auto"}
       flexDirection={{
@@ -60,13 +83,12 @@ const Login = () => {
         sm: "column",
         md: "column",
         lg: "row",
-        xl: "row",
-        "2xl": "row",
+        xl: "row"
+        
       }}
       alignItems={"center"}
     >
       <Box
-      
         width={{
           base: "40%",
           sm: "40%",

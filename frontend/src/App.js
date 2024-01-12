@@ -1,15 +1,23 @@
+import { useSelector } from 'react-redux';
 import './App.css';
+import AddProduct from './pages/AddProduct';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
-import Register from './pages/Register';
+import AllRoutes from './pages/AllRoutes';
+import Navbar from './pages/Navbar';
 
 
 function App() {
+
+  const {isAuth} = useSelector((store)=>store.authReducer.isAuth);
+
   return (
     <div className="App">
-      {/* <Login /> */}
-      {/* <Register /> */}
-      <Dashboard />
+      <Navbar />
+      <AllRoutes />
+     {/* {!isAuth?  <Login/>:  <Dashboard />} */}
+      {/* <AddProduct /> */}
+    
     </div>
   );
 }

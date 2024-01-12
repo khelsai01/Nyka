@@ -1,6 +1,8 @@
 import axios from "axios"
 import { LOGIN_FAILTUE, LOGIN_REQUEST, LOGIN_SUCCESS, REGISTER_SUCCESS } from "./actionTypes";
-export const URL = "http://localhost:8080/api"
+export const URL = "https://odd-fly-costume.cyclic.app/api"
+// export const URL = "http://localhost:8080/api";
+
 
 export const login = (obj)=>(dispatch) => {
   // Complete login logic here
@@ -9,6 +11,7 @@ export const login = (obj)=>(dispatch) => {
   return axios.post(`${URL+"/login"}`,obj).then((res)=>{
     console.log(res.data)
     dispatch({type:LOGIN_SUCCESS,payload:res.data})
+    localStorage.setItem("token",(res.data.token))
   }).catch(()=>{
   dispatch({type:LOGIN_FAILTUE})
   })
